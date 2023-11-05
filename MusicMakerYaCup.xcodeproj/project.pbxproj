@@ -131,6 +131,7 @@
 		923BB11D2AF5318800129745 /* RecordPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				923BB11E2AF5319600129745 /* RecordPlayerView.swift */,
 			);
 			path = RecordPlayer;
 			sourceTree = "<group>";
@@ -247,7 +248,6 @@
 		92BBA8A32AF1699D00B85D82 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				923BB11E2AF5319600129745 /* RecordPlayerView.swift */,
 				923BB11D2AF5318800129745 /* RecordPlayer */,
 				9232CF372AF3E2E100590385 /* Menu */,
 				924C6CB62AF2BEDB007525EB /* SampleSelector */,
