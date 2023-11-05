@@ -77,8 +77,13 @@ class RecordPlayerView: UIView {
 
     @objc private func playerDidFinishPlaying(sender: Notification) {
         guard (sender.object as? AVPlayerItem) === audioPlayer.currentItem else { return }
-        audioPlayer.seek(to: CMTime.zero)
-        audioPlayer.play()
+        if CompositionController.shared.activeLayer?.isLooping == true {
+            audioPlayer.seek(to: CMTime.zero)
+            audioPlayer.play()
+        } else {
+            button.setImage(.playCircleIcon, for: .normal)
+            audioPlayer.pause()
+        }
     }
 
     @objc private func handleButtonTap() {

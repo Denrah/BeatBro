@@ -17,6 +17,7 @@ class Layer {
     var number: Int
     var type: LayerType
     var isMuted = false
+    var isLooping = true
 
     var name: String {
         switch type {

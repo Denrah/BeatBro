@@ -14,6 +14,7 @@ class LayerItemView: UIView {
     private let deleteButton = UIButton(type: .system)
     private let muteButton = UIButton(type: .system)
     private let playButton = UIButton(type: .system)
+    private let loopButton = UIButton(type: .system)
 
     private let samplesPlayer = SampleConfigurationPadPlayer()
     private let recordPlayer = AVPlayer()
@@ -48,11 +49,14 @@ class LayerItemView: UIView {
             }
             samplesPlayer.setInterval(interval)
             samplesPlayer.setVolume(volume)
+            loopButton.isHidden = true
         case .voice(let url):
             if let url = url {
                 let item = AVPlayerItem(url: url)
                 recordPlayer.replaceCurrentItem(with: item)
             }
+            loopButton.isHidden = false
+            loopButton.tintColor = layer.isLooping ? .accent : .white
         }
     }
 
@@ -62,6 +66,7 @@ class LayerItemView: UIView {
         setupDeleteButton()
         setupMuteButton()
         setupPlayButton()
+        setupLoopButton()
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
 
         NotificationCenter.default
@@ -75,8 +80,13 @@ class LayerItemView: UIView {
     @objc private func playerDidFinishPlaying(sender: Notification) {
         guard case .voice = layerModel?.type else { return }
         guard (sender.object as? AVPlayerItem) === recordPlayer.currentItem else { return }
-        recordPlayer.seek(to: CMTime.zero)
-        recordPlayer.play()
+        if layerModel?.isLooping == true {
+            recordPlayer.seek(to: CMTime.zero)
+            recordPlayer.play()
+        } else {
+            recordPlayer.pause()
+            playButton.setImage(.playIcon, for: .normal)
+        }
     }
 
     private func setupContainer() {
@@ -131,6 +141,18 @@ class LayerItemView: UIView {
         playButton.addTarget(self, action: #selector(handlePlayButtonTap), for: .touchUpInside)
     }
 
+    private func setupLoopButton() {
+        addSubview(loopButton)
+        loopButton.setImage(.loopIcon, for: .normal)
+        loopButton.tintColor = .white
+        loopButton.snp.makeConstraints { make in
+            make.size.equalTo(40)
+            make.trailing.equalTo(playButton.snp.leading)
+            make.centerY.equalToSuperview()
+        }
+        loopButton.addTarget(self, action: #selector(handleLoopButtonTap), for: .touchUpInside)
+    }
+
     @objc private func handleTap() {
         guard let layerID = layerModel?.id else { return }
         CompositionController.shared.setActiveLayer(layerID: layerID)
@@ -167,6 +189,11 @@ class LayerItemView: UIView {
             recordPlayer.pause()
             playButton.setImage(.playIcon, for: .normal)
         }
+    }
+
+    @objc private func handleLoopButtonTap() {
+        guard let id = layerModel?.id else { return }
+        CompositionController.shared.toggleLayerLoop(id: id)
     }
 }
 

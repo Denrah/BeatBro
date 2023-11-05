@@ -25,4 +25,5 @@ extension UIImage {
     static let muteIcon = UIImage(named: "mute-icon")
     static let soundIcon = UIImage(named: "sound-icon")
     static let doubleArrowIcon = UIImage(named: "double-arrow-icon")
+    static let loopIcon = UIImage(named: "loop-icon")
 }
