@@ -241,7 +241,7 @@ class MenuView: UIView {
 
         }
 
-        audioRecorder.onDidFinishRecording = { [weak self] url, _ in
+        audioRecorder.onDidFinishRecording = { url, _ in
             if let url = url {
                 CompositionController.shared.updateActiveLayer(recordURL: url)
             }
