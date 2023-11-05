@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "double-arrow-icon.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
