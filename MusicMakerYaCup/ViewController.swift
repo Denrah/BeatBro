@@ -127,6 +127,11 @@ class ViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "ОК", style: .cancel))
             self?.present(alert, animated: true)
         }
+
+        CompositionController.shared.onStartPlayback = { [weak self] in
+            self?.recordPlayerView.stop()
+            self?.layersView.stop()
+        }
     }
 
     private func setupSampleConfigurationPadView() {

@@ -60,6 +60,13 @@ class LayerItemView: UIView {
         }
     }
 
+    func stop() {
+        samplesPlayer.stop()
+        recordPlayer.pause()
+        recordPlayer.seek(to: CMTime.zero)
+        playButton.setImage(.playIcon, for: .normal)
+    }
+
     private func setup() {
         setupContainer()
         setupTitleLabel()
@@ -227,6 +234,12 @@ class LayersView: UIView {
         heightConstraint?.update(offset: height)
         layoutIfNeeded()
         scrollView.scrollRectToVisible(stackView.arrangedSubviews[activeIndex].frame, animated: true)
+    }
+
+    func stop() {
+        stackView.arrangedSubviews.forEach { view in
+            (view as? LayerItemView)?.stop()
+        }
     }
 
     private func setup() {

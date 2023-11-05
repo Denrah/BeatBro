@@ -18,6 +18,7 @@ class Layer {
     var type: LayerType
     var isMuted = false
     var isLooping = true
+    var isPlaying = false
 
     var name: String {
         switch type {

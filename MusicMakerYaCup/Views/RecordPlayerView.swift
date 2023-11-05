@@ -91,6 +91,7 @@ class RecordPlayerView: UIView {
             button.setImage(.playCircleIcon, for: .normal)
             audioPlayer.pause()
         } else {
+            guard !CompositionController.shared.isCompositionPlaying, !CompositionController.shared.isCompositionPlaying else { return }
             button.setImage(.pauseCircleIcon, for: .normal)
             audioPlayer.seek(to: CMTime.zero)
             audioPlayer.play()
