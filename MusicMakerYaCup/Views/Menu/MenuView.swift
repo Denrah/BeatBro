@@ -207,7 +207,7 @@ class MenuView: UIView {
     private let playbackButtonView = MenuButtonView()
 
     private let audioRecorder = AudioRecorder()
-    private var isAudioRecording = false
+    private(set) var isAudioRecording = false
 
     private var audioPlayer = AVPlayer()
 
@@ -283,7 +283,8 @@ class MenuView: UIView {
         micButtonView.tintColor = .white
         micButtonView.onDidTap = { [weak self] in
             guard let self = self else { return }
-            if self.isAudioRecording {
+            self.isAudioRecording.toggle()
+            if !self.isAudioRecording {
                 self.recordButtonView.isEnabled = true
                 self.playbackButtonView.isEnabled = true
                 self.micButtonView.tintColor = .white
@@ -293,9 +294,12 @@ class MenuView: UIView {
                 self.playbackButtonView.isEnabled = false
                 self.micButtonView.tintColor = .accentRed
                 CompositionController.shared.addVocalLayer()
-                try? self.audioRecorder.startRecording()
+                do {
+                    try self.audioRecorder.startRecording()
+                } catch {
+                    showError?(error.localizedDescription)
+                }
             }
-            self.isAudioRecording.toggle()
         }
     }
 
@@ -313,7 +317,11 @@ class MenuView: UIView {
                 self?.micButtonView.isEnabled = false
                 self?.playbackButtonView.isEnabled = false
                 self?.recordButtonView.tintColor = .accentRed
-                try? CompositionController.shared.recordComposition()
+                do {
+                    try CompositionController.shared.recordComposition()
+                } catch {
+                    showError?(error.localizedDescription)
+                }
             }
         }
     }

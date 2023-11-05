@@ -24,11 +24,13 @@ class AudioRecorder: NSObject {
                         completion(.success(()))
                     } else {
                         completion(.failure(NSError(domain: "Permission not granted", code: 403)))
+                        showError?("Permission not granted")
                     }
                 }
             }
         } catch {
             completion(.failure(error))
+            showError?(error.localizedDescription)
         }
     }
 

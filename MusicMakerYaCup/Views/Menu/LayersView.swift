@@ -75,7 +75,8 @@ class LayerItemView: UIView {
     @objc private func playerDidFinishPlaying(sender: Notification) {
         guard case .voice = layerModel?.type else { return }
         guard (sender.object as? AVPlayerItem) === recordPlayer.currentItem else { return }
-        handlePlayButtonTap()
+        recordPlayer.seek(to: CMTime.zero)
+        recordPlayer.play()
     }
 
     private func setupContainer() {
@@ -146,6 +147,8 @@ class LayerItemView: UIView {
     }
 
     @objc private func handlePlayButtonTap() {
+        guard !CompositionController.shared.isRecording, !CompositionController.shared.isCompositionPlaying else { return }
+
         isPlaying.toggle()
 
         if isPlaying {

@@ -3,4 +3,69 @@
    uuid = "B31AAED2-82EE-4898-B2D8-98BA3BCE7E47"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DBD5F236-39F0-4174-8BEF-018183DA2EFA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MusicMakerYaCup/Controller/CompositionController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
+            landmarkName = "scheduleVocal(_:node:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "DBD5F236-39F0-4174-8BEF-018183DA2EFA - 374a6f8a8841727a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MusicMakerYaCup.CompositionController.scheduleVocal(_: __C.AVAudioFile, node: __C.AVAudioPlayerNode) -&gt; ()"
+                  moduleName = "MusicMakerYaCup"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/denis/Documents/Xcode_projects/MusicMakerYaCup/MusicMakerYaCup/Controller/CompositionController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "244"
+                  endingLineNumber = "244"
+                  offsetFromSymbolStart = "624">
+               </Location>
+               <Location
+                  uuid = "DBD5F236-39F0-4174-8BEF-018183DA2EFA - 374a6f8a8841727a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MusicMakerYaCup.CompositionController.scheduleVocal(_: __C.AVAudioFile, node: __C.AVAudioPlayerNode) -&gt; ()"
+                  moduleName = "MusicMakerYaCup"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/denis/Documents/Xcode_projects/MusicMakerYaCup/MusicMakerYaCup/Controller/CompositionController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "244"
+                  endingLineNumber = "244"
+                  offsetFromSymbolStart = "772">
+               </Location>
+               <Location
+                  uuid = "DBD5F236-39F0-4174-8BEF-018183DA2EFA - c0acf9b5b89f0a83"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in MusicMakerYaCup.CompositionController.scheduleVocal(_: __C.AVAudioFile, node: __C.AVAudioPlayerNode) -&gt; ()"
+                  moduleName = "MusicMakerYaCup"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/denis/Documents/Xcode_projects/MusicMakerYaCup/MusicMakerYaCup/Controller/CompositionController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "244"
+                  endingLineNumber = "244"
+                  offsetFromSymbolStart = "36">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

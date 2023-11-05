@@ -243,7 +243,7 @@ class SampleSelectorView: UIView {
         }
 
         if location.x > samplesStackView.arrangedSubviews.last?.frame.maxX ?? 0 {
-            (samplesStackView.arrangedSubviews.first as? SampleMenuItemView)?.isHighlighted = true
+            (samplesStackView.arrangedSubviews.last as? SampleMenuItemView)?.isHighlighted = true
             selectedSample = (samplesStackView.arrangedSubviews.last as? SampleMenuItemView)?.sample
         }
     }

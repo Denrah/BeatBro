@@ -10,6 +10,8 @@ import SnapKit
 import CoreMedia
 import AVFoundation
 
+var showError: ((_ text: String) -> Void)?
+
 class HitView: UIView {
     var onDidTapView: (() -> Void)?
 
@@ -66,8 +68,8 @@ class ViewController: UIViewController {
         setupAudioVisualizerView()
         setupSampleConfigurationPadView()
         setupInfoStackView()
-        setupSampleSelectorView()
         setupMenuView()
+        setupSampleSelectorView()
         setupLayersView()
         setupLoadingOverlay()
 
@@ -77,17 +79,24 @@ class ViewController: UIViewController {
             let activeLayer = CompositionController.shared.activeLayer
             self?.layerLabel.text = activeLayer?.name
             self?.recordNameLabel.text = "\(activeLayer?.number ?? 0) • \(activeLayer?.name ?? "")"
+
+            self?.recordPlayerView.isRecordingInProcess = (self?.menuView.isAudioRecording ?? false)
+
+            if self?.menuView.isAudioRecording == true {
+                self?.recordPlayerView.stop()
+            }
+
             switch activeLayer?.type {
             case .sample(_, let interval, let volume):
                 self?.bpmLabel.text = "\(Int(60 / interval)) BPM • \(Int(volume * 100))%"
             default:
                 self?.bpmLabel.text = ""
             }
+
             switch activeLayer?.type {
             case .sample(let sample, let interval, let volume):
                 self?.recordPlayerView.isHidden = true
                 self?.recordNameLabel.isHidden = true
-                self?.sampleSelectorView.isHidden = false
                 self?.sampleConfigurationPadView.isHidden = false
                 self?.infoStackView.isHidden = false
                 self?.sampleConfigurationPadView.setParameters(interval: interval, volume: volume)
@@ -95,7 +104,6 @@ class ViewController: UIViewController {
             case .voice(let url):
                 self?.recordPlayerView.isHidden = false
                 self?.recordNameLabel.isHidden = false
-                self?.sampleSelectorView.isHidden = true
                 self?.infoStackView.isHidden = true
                 self?.sampleConfigurationPadView.isHidden = true
                 if let url = url {
@@ -112,6 +120,12 @@ class ViewController: UIViewController {
             self?.present(activityViewController, animated: true) { [weak self] in
                 self?.loadingOverlay.isHidden = true
             }
+        }
+
+        showError = { [weak self] text in
+            let alert = UIAlertController(title: "Ошибка", message: text, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "ОК", style: .cancel))
+            self?.present(alert, animated: true)
         }
     }
 
@@ -149,18 +163,6 @@ class ViewController: UIViewController {
         bpmLabel.textColor = .textTertiary
     }
 
-    private func setupSampleSelectorView() {
-        view.addSubview(sampleSelectorView)
-        sampleSelectorView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView.snp.bottom).offset(24)
-            make.leading.trailing.equalToSuperview().inset(24)
-        }
-
-        sampleSelectorView.onDidSelectSample = { [weak self] sample in
-            CompositionController.shared.addInstrumentalLayer(sample: sample)
-        }
-    }
-
     private func setupMenuView() {
         view.addSubview(menuView)
         menuView.snp.makeConstraints { make in
@@ -173,6 +175,18 @@ class ViewController: UIViewController {
                 self?.layersView.alpha = isOpened ? 1 : 0
                 self?.layersView.transform = isOpened ? .identity : CGAffineTransform(translationX: 0, y: 8)
             }
+        }
+    }
+
+    private func setupSampleSelectorView() {
+        view.addSubview(sampleSelectorView)
+        sampleSelectorView.snp.makeConstraints { make in
+            make.bottom.equalTo(menuView.snp.top).offset(-24)
+            make.leading.trailing.equalToSuperview().inset(24)
+        }
+
+        sampleSelectorView.onDidSelectSample = { sample in
+            CompositionController.shared.addInstrumentalLayer(sample: sample)
         }
     }
 

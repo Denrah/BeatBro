@@ -220,7 +220,7 @@ class CompositionController {
         case .voice(let url):
             if let url = url, let file = try? AVAudioFile(forReading: url) {
                 node.volume = layer.isMuted ? 0 : 1
-                node.scheduleFile(file, at: nil)
+                scheduleVocal(file, node: node)
             }
         }
         node.play()
@@ -233,6 +233,17 @@ class CompositionController {
         DispatchQueue.main.asyncAfter(deadline: .now() + interval) { [weak self, weak node, weak file] in
             guard self?.audioEngine.isRunning == true, let node = node, let file = file else { return }
             self?.scheduleFile(file, node: node, interval: interval)
+        }
+        node.play()
+    }
+
+    private func scheduleVocal(_ file: AVAudioFile, node: AVAudioPlayerNode) {
+        node.stop()
+        node.scheduleFile(file, at: nil)
+        let interval = Double(file.length) / file.processingFormat.sampleRate
+        DispatchQueue.main.asyncAfter(deadline: .now() + interval) { [weak self, weak node, weak file] in
+            guard self?.audioEngine.isRunning == true, let node = node, let file = file else { return }
+            self?.scheduleVocal(file, node: node)
         }
         node.play()
     }
