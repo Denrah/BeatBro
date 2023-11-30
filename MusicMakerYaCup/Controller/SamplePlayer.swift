@@ -1,5 +1,5 @@
 //
-//  SampleConfigurationPadPlayer.swift
+//  SamplePlayer.swift
 //  MusicMakerYaCup
 //
 //  Created by Denis Sharapov on 01.11.2023.
@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-class SampleConfigurationPadPlayer {
+class SamplePlayer {
     enum Constants {
         static let minBPM: Double = 60
         static let maxBPM: Double = 180
@@ -60,11 +60,14 @@ class SampleConfigurationPadPlayer {
 
     func play(shouldFire: Bool = true) {
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { [weak self] _ in
+        timer = Timer(timeInterval: timerInterval, repeats: true) { [weak self] _ in
             self?.player.seek(to: CMTime.zero)
             self?.player.play()
             self?.lastPlayDate = Date()
             self?.onDidPlay?(self?.timerInterval ?? 0)
+        }
+        if let timer = timer {
+            RunLoop.main.add(timer, forMode: .common)
         }
         if shouldFire {
             timer?.fire()

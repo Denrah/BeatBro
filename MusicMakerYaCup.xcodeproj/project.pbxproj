@@ -30,7 +30,7 @@
 		923BB13A2AF7B14F00129745 /* T_C.wav in Resources */ = {isa = PBXBuildFile; fileRef = 923BB1362AF7B14F00129745 /* T_C.wav */; };
 		923BB13B2AF7B14F00129745 /* T_F.wav in Resources */ = {isa = PBXBuildFile; fileRef = 923BB1372AF7B14F00129745 /* T_F.wav */; };
 		923BB13C2AF7B14F00129745 /* T_A.wav in Resources */ = {isa = PBXBuildFile; fileRef = 923BB1382AF7B14F00129745 /* T_A.wav */; };
-		924C6CAE2AF29487007525EB /* SampleConfigurationPadPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924C6CAD2AF29487007525EB /* SampleConfigurationPadPlayer.swift */; };
+		924C6CAE2AF29487007525EB /* SamplePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924C6CAD2AF29487007525EB /* SamplePlayer.swift */; };
 		924C6CB22AF29546007525EB /* Hit.wav in Resources */ = {isa = PBXBuildFile; fileRef = 924C6CB12AF29546007525EB /* Hit.wav */; };
 		924C6CB52AF2956B007525EB /* Samples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924C6CB42AF2956B007525EB /* Samples.swift */; };
 		924C6CB82AF2BEEC007525EB /* SampleSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924C6CB72AF2BEEC007525EB /* SampleSelectorView.swift */; };
@@ -45,6 +45,9 @@
 		92BBA8A62AF16D2D00B85D82 /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BBA8A52AF16D2D00B85D82 /* UIColor+AppColors.swift */; };
 		92BBA8A82AF16D9700B85D82 /* SampleConfiguratorPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BBA8A72AF16D9700B85D82 /* SampleConfiguratorPadView.swift */; };
 		92BBA8AA2AF16E1000B85D82 /* UIImage+AppImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BBA8A92AF16E1000B85D82 /* UIImage+AppImages.swift */; };
+		92D902302B139D7700100C37 /* MusicalInstrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D9022F2B139D7700100C37 /* MusicalInstrument.swift */; };
+		92D902322B139D9600100C37 /* SampleMenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D902312B139D9600100C37 /* SampleMenuItemView.swift */; };
+		92D902342B139DC400100C37 /* LayerItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D902332B139DC400100C37 /* LayerItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,7 +74,7 @@
 		923BB1362AF7B14F00129745 /* T_C.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = T_C.wav; sourceTree = "<group>"; };
 		923BB1372AF7B14F00129745 /* T_F.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = T_F.wav; sourceTree = "<group>"; };
 		923BB1382AF7B14F00129745 /* T_A.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = T_A.wav; sourceTree = "<group>"; };
-		924C6CAD2AF29487007525EB /* SampleConfigurationPadPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleConfigurationPadPlayer.swift; sourceTree = "<group>"; };
+		924C6CAD2AF29487007525EB /* SamplePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplePlayer.swift; sourceTree = "<group>"; };
 		924C6CB12AF29546007525EB /* Hit.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Hit.wav; sourceTree = "<group>"; };
 		924C6CB42AF2956B007525EB /* Samples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Samples.swift; sourceTree = "<group>"; };
 		924C6CB72AF2BEEC007525EB /* SampleSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleSelectorView.swift; sourceTree = "<group>"; };
@@ -87,6 +90,9 @@
 		92BBA8A52AF16D2D00B85D82 /* UIColor+AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AppColors.swift"; sourceTree = "<group>"; };
 		92BBA8A72AF16D9700B85D82 /* SampleConfiguratorPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleConfiguratorPadView.swift; sourceTree = "<group>"; };
 		92BBA8A92AF16E1000B85D82 /* UIImage+AppImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+AppImages.swift"; sourceTree = "<group>"; };
+		92D9022F2B139D7700100C37 /* MusicalInstrument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalInstrument.swift; sourceTree = "<group>"; };
+		92D902312B139D9600100C37 /* SampleMenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleMenuItemView.swift; sourceTree = "<group>"; };
+		92D902332B139DC400100C37 /* LayerItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +112,7 @@
 			children = (
 				9232CF382AF3E2EF00590385 /* MenuView.swift */,
 				9232CF3A2AF3EDDC00590385 /* LayersView.swift */,
+				92D902332B139DC400100C37 /* LayerItemView.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
@@ -114,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				9232CF3D2AF41A2E00590385 /* CompositionController.swift */,
+				924C6CAD2AF29487007525EB /* SamplePlayer.swift */,
 				923BB11B2AF5262000129745 /* AudioRecorder.swift */,
 			);
 			path = Controller;
@@ -124,6 +132,7 @@
 			children = (
 				9232CF402AF41A6000590385 /* Sample.swift */,
 				9232CF422AF41A7000590385 /* Layer.swift */,
+				92D9022F2B139D7700100C37 /* MusicalInstrument.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -173,7 +182,6 @@
 			isa = PBXGroup;
 			children = (
 				92BBA8A72AF16D9700B85D82 /* SampleConfiguratorPadView.swift */,
-				924C6CAD2AF29487007525EB /* SampleConfigurationPadPlayer.swift */,
 			);
 			path = SampleConfigurationPad;
 			sourceTree = "<group>";
@@ -206,6 +214,7 @@
 			children = (
 				924C6CB72AF2BEEC007525EB /* SampleSelectorView.swift */,
 				924C6CB92AF2D052007525EB /* SampleSelectorItemView.swift */,
+				92D902312B139D9600100C37 /* SampleMenuItemView.swift */,
 			);
 			path = SampleSelector;
 			sourceTree = "<group>";
@@ -359,18 +368,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				92D902322B139D9600100C37 /* SampleMenuItemView.swift in Sources */,
 				9232CF3E2AF41A2E00590385 /* CompositionController.swift in Sources */,
 				92BBA8912AF168D000B85D82 /* ViewController.swift in Sources */,
 				92BBA8AA2AF16E1000B85D82 /* UIImage+AppImages.swift in Sources */,
 				923BB1212AF5493200129745 /* AudioVisualizerView.swift in Sources */,
-				924C6CAE2AF29487007525EB /* SampleConfigurationPadPlayer.swift in Sources */,
+				924C6CAE2AF29487007525EB /* SamplePlayer.swift in Sources */,
 				92BBA8A62AF16D2D00B85D82 /* UIColor+AppColors.swift in Sources */,
 				923BB11F2AF5319600129745 /* RecordPlayerView.swift in Sources */,
 				9232CF412AF41A6000590385 /* Sample.swift in Sources */,
 				923BB11C2AF5262000129745 /* AudioRecorder.swift in Sources */,
 				92BBA88D2AF168D000B85D82 /* AppDelegate.swift in Sources */,
 				924C6CB52AF2956B007525EB /* Samples.swift in Sources */,
+				92D902302B139D7700100C37 /* MusicalInstrument.swift in Sources */,
 				9232CF3B2AF3EDDC00590385 /* LayersView.swift in Sources */,
+				92D902342B139DC400100C37 /* LayerItemView.swift in Sources */,
 				924C6CBA2AF2D052007525EB /* SampleSelectorItemView.swift in Sources */,
 				9232CF392AF3E2EF00590385 /* MenuView.swift in Sources */,
 				92BBA8A82AF16D9700B85D82 /* SampleConfiguratorPadView.swift in Sources */,
@@ -523,7 +535,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = LHL6WHL3CM;
+				DEVELOPMENT_TEAM = T5T228SHK5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MusicMakerYaCup/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BeatBro;
@@ -555,7 +567,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = LHL6WHL3CM;
+				DEVELOPMENT_TEAM = T5T228SHK5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MusicMakerYaCup/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BeatBro;

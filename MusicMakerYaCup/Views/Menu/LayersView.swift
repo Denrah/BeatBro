@@ -6,246 +6,38 @@
 //
 
 import UIKit
-import AVFoundation
 import SnapKit
-
-class LayerItemView: UIView {
-    private let titleLabel = UILabel()
-    private let deleteButton = UIButton(type: .system)
-    private let muteButton = UIButton(type: .system)
-    private let playButton = UIButton(type: .system)
-    private let loopButton = UIButton(type: .system)
-
-    private let samplesPlayer = SampleConfigurationPadPlayer()
-    private let recordPlayer = AVPlayer()
-    private var isPlaying = false
-
-    private(set) var layerModel: Layer?
-
-    init() {
-        super.init(frame: .zero)
-        setup()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup()
-    }
-
-    func configure(with layer: Layer) {
-        self.layerModel = layer
-        titleLabel.text = "\(layer.number) • \(layer.name)"
-        backgroundColor = CompositionController.shared.activeLayer?.id == layer.id ? .accent.withAlphaComponent(0.15) : .clear
-        if layer.isMuted {
-            muteButton.setImage(.muteIcon, for: .normal)
-        } else {
-            muteButton.setImage(.soundIcon, for: .normal)
-        }
-
-        switch layer.type {
-        case .sample(let sample, let interval, let volume):
-            if let url = sample.url {
-                samplesPlayer.setSampleURL(url)
-            }
-            samplesPlayer.setInterval(interval)
-            samplesPlayer.setVolume(volume)
-            loopButton.isHidden = true
-        case .voice(let url):
-            if let url = url {
-                let item = AVPlayerItem(url: url)
-                recordPlayer.replaceCurrentItem(with: item)
-            }
-            loopButton.isHidden = false
-            loopButton.tintColor = layer.isLooping ? .accent : .white
-        }
-    }
-
-    func stop() {
-        samplesPlayer.stop()
-        recordPlayer.pause()
-        recordPlayer.seek(to: CMTime.zero)
-        playButton.setImage(.playIcon, for: .normal)
-    }
-
-    private func setup() {
-        setupContainer()
-        setupTitleLabel()
-        setupDeleteButton()
-        setupMuteButton()
-        setupPlayButton()
-        setupLoopButton()
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
-
-        NotificationCenter.default
-            .addObserver(self,
-            selector: #selector(playerDidFinishPlaying(sender:)),
-            name: .AVPlayerItemDidPlayToEndTime,
-            object: recordPlayer.currentItem
-        )
-    }
-
-    @objc private func playerDidFinishPlaying(sender: Notification) {
-        guard case .voice = layerModel?.type else { return }
-        guard (sender.object as? AVPlayerItem) === recordPlayer.currentItem else { return }
-        if layerModel?.isLooping == true {
-            recordPlayer.seek(to: CMTime.zero)
-            recordPlayer.play()
-        } else {
-            recordPlayer.pause()
-            playButton.setImage(.playIcon, for: .normal)
-        }
-    }
-
-    private func setupContainer() {
-        snp.makeConstraints { make in
-            make.height.equalTo(48)
-        }
-    }
-
-    private func setupTitleLabel() {
-        addSubview(titleLabel)
-        titleLabel.font = .systemFont(ofSize: 16)
-        titleLabel.textColor = .white
-        titleLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().inset(16)
-        }
-    }
-
-    private func setupDeleteButton() {
-        addSubview(deleteButton)
-        deleteButton.setImage(.closeIcon, for: .normal)
-        deleteButton.tintColor = .white
-        deleteButton.snp.makeConstraints { make in
-            make.size.equalTo(40)
-            make.trailing.equalToSuperview().inset(8)
-            make.centerY.equalToSuperview()
-        }
-        deleteButton.addTarget(self, action: #selector(handleDeleteButtonTap), for: .touchUpInside)
-    }
-
-    private func setupMuteButton() {
-        addSubview(muteButton)
-        muteButton.setImage(.soundIcon, for: .normal)
-        muteButton.tintColor = .white
-        muteButton.snp.makeConstraints { make in
-            make.size.equalTo(40)
-            make.trailing.equalTo(deleteButton.snp.leading)
-            make.centerY.equalToSuperview()
-        }
-        muteButton.addTarget(self, action: #selector(handleMuteButtonTap), for: .touchUpInside)
-    }
-
-    private func setupPlayButton() {
-        addSubview(playButton)
-        playButton.setImage(.playIcon, for: .normal)
-        playButton.tintColor = .white
-        playButton.snp.makeConstraints { make in
-            make.size.equalTo(40)
-            make.trailing.equalTo(muteButton.snp.leading)
-            make.centerY.equalToSuperview()
-        }
-        playButton.addTarget(self, action: #selector(handlePlayButtonTap), for: .touchUpInside)
-    }
-
-    private func setupLoopButton() {
-        addSubview(loopButton)
-        loopButton.setImage(.loopIcon, for: .normal)
-        loopButton.tintColor = .white
-        loopButton.snp.makeConstraints { make in
-            make.size.equalTo(40)
-            make.trailing.equalTo(playButton.snp.leading)
-            make.centerY.equalToSuperview()
-        }
-        loopButton.addTarget(self, action: #selector(handleLoopButtonTap), for: .touchUpInside)
-    }
-
-    @objc private func handleTap() {
-        guard let layerID = layerModel?.id else { return }
-        CompositionController.shared.setActiveLayer(layerID: layerID)
-    }
-
-    @objc private func handleDeleteButtonTap() {
-        guard let id = layerModel?.id else { return }
-        CompositionController.shared.deleteLayer(id: id)
-    }
-
-    @objc private func handleMuteButtonTap() {
-        guard let id = layerModel?.id else { return }
-        CompositionController.shared.toggleLayerMute(id: id)
-    }
-
-    @objc private func handlePlayButtonTap() {
-        guard !CompositionController.shared.isRecording, !CompositionController.shared.isCompositionPlaying else { return }
-
-        isPlaying.toggle()
-
-        if isPlaying {
-            switch layerModel?.type {
-            case .sample:
-                samplesPlayer.play()
-            case .voice:
-                recordPlayer.seek(to: CMTime.zero)
-                recordPlayer.play()
-            default:
-                break
-            }
-            playButton.setImage(.pauseIcon, for: .normal)
-        } else {
-            samplesPlayer.stop()
-            recordPlayer.pause()
-            playButton.setImage(.playIcon, for: .normal)
-        }
-    }
-
-    @objc private func handleLoopButtonTap() {
-        guard let id = layerModel?.id else { return }
-        CompositionController.shared.toggleLayerLoop(id: id)
-    }
-}
 
 class LayersView: UIView {
 
-    private let scrollView = UIScrollView()
-    private let stackView = UIStackView()
+    private let tableView = UITableView()
 
     private var heightConstraint: Constraint?
 
-    init() {
-        super.init(frame: .zero)
-        setup()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup()
-    }
+    private var viewModels: [LayerItemViewModel] = []
 
     func update() {
-        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        var activeIndex = 0
-        CompositionController.shared.layers.enumerated().forEach { index, layer in
-            let item = LayerItemView()
-            item.configure(with: layer)
-            stackView.addArrangedSubview(item)
-            activeIndex = CompositionController.shared.activeLayer?.id == layer.id ? index : activeIndex
-        }
-        let height = min(CGFloat(stackView.arrangedSubviews.count * 48), UIScreen.main.bounds.height / 2)
+        viewModels = CompositionController.shared.layers.map { .init(layer: $0) }
+        tableView.reloadData()
+        let height = min(CGFloat(viewModels.count * 48), UIScreen.main.bounds.height / 2)
         heightConstraint?.update(offset: height)
         layoutIfNeeded()
-        scrollView.scrollRectToVisible(stackView.arrangedSubviews[activeIndex].frame, animated: true)
+        if let activeIndex = CompositionController.shared.layers.firstIndex(where: {
+            return $0.id == CompositionController.shared.activeLayer?.id
+        }), viewModels.count > activeIndex {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                self?.tableView.scrollToRow(at: IndexPath(row: activeIndex, section: 0), at: .none, animated: true)
+            }
+        }
     }
 
     func stop() {
-        stackView.arrangedSubviews.forEach { view in
-            (view as? LayerItemView)?.stop()
-        }
+        viewModels.forEach { $0.stop() }
     }
 
-    private func setup() {
+    func setup() {
         setupContainer()
-        setupScrollView()
-        setupStackView()
+        setupTableView()
         update()
     }
 
@@ -258,23 +50,36 @@ class LayersView: UIView {
         layer.shadowOpacity = 0.3
     }
 
-    private func setupScrollView() {
-        addSubview(scrollView)
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.snp.makeConstraints { make in
+    private func setupTableView() {
+        addSubview(tableView)
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        tableView.layer.cornerRadius = 8
+        tableView.clipsToBounds = true
+        tableView.register(LayerItemViewCell.self, forCellReuseIdentifier: "layerCell")
+        tableView.showsVerticalScrollIndicator = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.alwaysBounceVertical = false
+        tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             heightConstraint = make.height.equalTo(0).constraint
         }
     }
+}
 
-    private func setupStackView() {
-        scrollView.addSubview(stackView)
-        stackView.layer.cornerRadius = 8
-        stackView.clipsToBounds = true
-        stackView.axis = .vertical
-        stackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalToSuperview()
-        }
+extension LayersView: UITableViewDelegate, UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return CompositionController.shared.layers.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "layerCell", for: indexPath)
+        (cell as? LayerItemViewCell)?.configure(with: viewModels[indexPath.row])
+        return cell
     }
 }

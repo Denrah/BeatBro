@@ -26,7 +26,7 @@ class SampleConfiguratorPadView: UIView {
 
     private var touchPosition: CGPoint?
 
-    private let player = SampleConfigurationPadPlayer()
+    private let player = SamplePlayer()
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
 
     private var sample: Sample?
@@ -182,10 +182,6 @@ class SampleConfiguratorPadView: UIView {
 
         speedLineX = min(frame.width - 2, max(2, speedLineX))
         volumeLineY = min(frame.height - 2, max(2, volumeLineY))
-
-//        speedLineView.frame = CGRect(x: speedLineX - 0.5, y: 0, width: 1, height: frame.height)
-//        volumeLineView.frame = CGRect(x: 0, y: volumeLineY - 0.5, width: frame.width, height: 1)
-//        touchCircleView.frame = CGRect(x: speedLineX - 4, y: volumeLineY - 4, width: 8, height: 8)
 
         let minX: CGFloat = 2
         let maxX = frame.width - 2

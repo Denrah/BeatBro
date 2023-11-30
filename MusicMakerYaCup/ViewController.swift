@@ -73,9 +73,12 @@ class ViewController: UIViewController {
         setupLayersView()
         setupLoadingOverlay()
 
-        CompositionController.shared.onActiveLayerUpdate = { [weak self] in
+        CompositionController.shared.onDidChangeLayers = { [weak self] in
             self?.layersView.update()
             self?.menuView.update()
+        }
+
+        CompositionController.shared.onActiveLayerUpdate = { [weak self] in
             let activeLayer = CompositionController.shared.activeLayer
             self?.layerLabel.text = activeLayer?.name
             self?.recordNameLabel.text = "\(activeLayer?.number ?? 0) • \(activeLayer?.name ?? "")"
@@ -181,6 +184,8 @@ class ViewController: UIViewController {
                 self?.layersView.transform = isOpened ? .identity : CGAffineTransform(translationX: 0, y: 8)
             }
         }
+
+        menuView.update()
     }
 
     private func setupSampleSelectorView() {
@@ -199,6 +204,7 @@ class ViewController: UIViewController {
         view.addSubview(layersView)
         layersView.transform = CGAffineTransform(translationX: 0, y: 8)
         layersView.alpha = 0
+        layersView.setup()
         layersView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(menuView)
             make.bottom.equalTo(menuView.snp.top).offset(-8)

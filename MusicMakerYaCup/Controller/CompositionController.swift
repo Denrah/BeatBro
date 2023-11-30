@@ -17,6 +17,7 @@ class CompositionController {
     }
 
     var onActiveLayerUpdate: (() -> Void)?
+    var onDidChangeLayers: (() -> Void)?
     var onDidFinishRecord: ((_ fileURL: URL) -> Void)?
     var onMagnitudesDidUpdate: (() -> Void)?
     var onStartPlayback: (() -> Void)?
@@ -47,6 +48,8 @@ class CompositionController {
     private var writingFile: AVAudioFile?
     private var writingFileURL: URL?
 
+    private let playbackQueue = DispatchQueue(label: "playback.queue", qos: .userInitiated)
+
     private init() {
         addInstrumentalLayer(sample: nil)
     }
@@ -60,7 +63,9 @@ class CompositionController {
         layersCounter += 1
         activeLayer = layer
         onActiveLayerUpdate?()
+        onDidChangeLayers?()
         if audioEngine.isRunning {
+            audioEngine.stop()
             playLayer(layer)
         }
     }
@@ -72,7 +77,9 @@ class CompositionController {
         layersCounter += 1
         activeLayer = layer
         onActiveLayerUpdate?()
+        onDidChangeLayers?()
         if audioEngine.isRunning {
+            audioEngine.stop()
             playLayer(layer)
         }
     }
@@ -81,6 +88,7 @@ class CompositionController {
         guard let layer = layers.first(where: { $0.id == layerID }) else { return }
         activeLayer = layer
         onActiveLayerUpdate?()
+        onDidChangeLayers?()
     }
 
     func updateActiveLayer(sample: Sample? = nil,
@@ -117,6 +125,7 @@ class CompositionController {
             addInstrumentalLayer(sample: nil)
         }
         onActiveLayerUpdate?()
+        onDidChangeLayers?()
     }
 
     func toggleLayerMute(id: UUID) {
@@ -130,6 +139,7 @@ class CompositionController {
         guard let layer = layers.first(where: { $0.id == id }) else { return }
         layer.isLooping.toggle()
         onActiveLayerUpdate?()
+        onDidChangeLayers?()
         nodes[id]?.volume = layer.isMuted ? 0 : 1
         if (isRecording || isCompositionPlaying) && layer.isLooping && !layer.isPlaying {
             playLayer(layer)
@@ -221,33 +231,40 @@ class CompositionController {
     }
 
     private func playLayer(_ layer: Layer) {
-        let node = AVAudioPlayerNode()
-        audioEngine.attach(node)
-        audioEngine.connect(node, to: mixer, format: nil)
-        switch layer.type {
-        case .sample(let sample, let interval, let volume):
-            if let url = sample.url, let file = try? AVAudioFile(forReading: url) {
-                node.volume = layer.isMuted ? 0 : Float(volume)
-                scheduleFile(file, node: node, interval: interval)
+        playbackQueue.async { [weak self] in
+            guard let self = self else { return }
+            let node = AVAudioPlayerNode()
+            audioEngine.attach(node)
+            audioEngine.connect(node, to: mixer, format: nil)
+            switch layer.type {
+            case .sample(let sample, let interval, let volume):
+                if let url = sample.url, let file = try? AVAudioFile(forReading: url) {
+                    node.volume = layer.isMuted ? 0 : Float(volume)
+                    scheduleFile(file, node: node, interval: interval)
+                }
+            case .voice(let url):
+                if let url = url, let file = try? AVAudioFile(forReading: url) {
+                    node.volume = layer.isMuted ? 0 : 1
+                    scheduleVocal(file, node: node, layer: layer)
+                }
             }
-        case .voice(let url):
-            if let url = url, let file = try? AVAudioFile(forReading: url) {
-                node.volume = layer.isMuted ? 0 : 1
-                scheduleVocal(file, node: node, layer: layer)
+            if audioEngine.isRunning {
+                node.play()
             }
+            nodes[layer.id] = node
         }
-        node.play()
-        nodes[layer.id] = node
     }
 
     private func scheduleFile(_ file: AVAudioFile, node: AVAudioPlayerNode, interval: TimeInterval) {
         node.stop()
         node.scheduleFile(file, at: nil)
-        DispatchQueue.main.asyncAfter(deadline: .now() + interval) { [weak self, weak node, weak file] in
+        playbackQueue.asyncAfter(deadline: .now() + interval) { [weak self, weak node, weak file] in
             guard self?.audioEngine.isRunning == true, let node = node, let file = file else { return }
             self?.scheduleFile(file, node: node, interval: interval)
         }
-        node.play()
+        if audioEngine.isRunning {
+            node.play()
+        }
     }
 
     private func scheduleVocal(_ file: AVAudioFile, node: AVAudioPlayerNode, layer: Layer) {
@@ -255,12 +272,14 @@ class CompositionController {
         node.stop()
         node.scheduleFile(file, at: nil)
         let interval = Double(file.length) / file.processingFormat.sampleRate
-        DispatchQueue.main.asyncAfter(deadline: .now() + interval) { [weak self, weak node, weak file, weak layer] in
+        playbackQueue.asyncAfter(deadline: .now() + interval) { [weak self, weak node, weak file, weak layer] in
             layer?.isPlaying = false
             guard self?.audioEngine.isRunning == true, let node = node, let file = file, let layer = layer, layer.isLooping else { return }
             self?.scheduleVocal(file, node: node, layer: layer)
         }
-        node.play()
+        if audioEngine.isRunning {
+            node.play()
+        }
     }
 
     private func fft(data: UnsafeMutablePointer<Float>, setup: OpaquePointer) -> [Float] {
