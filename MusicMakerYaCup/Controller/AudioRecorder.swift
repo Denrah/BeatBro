@@ -10,7 +10,7 @@ import AVFoundation
 class AudioRecorder: NSObject {
     var onDidFinishRecording: ((_ fileURL: URL?, _ success: Bool) -> Void)?
 
-    private let recordingSession = AVAudioSession.sharedInstance()
+    let recordingSession = AVAudioSession.sharedInstance()
     private var audioRecorder: AVAudioRecorder?
     private var fileURL: URL?
 
@@ -24,7 +24,7 @@ class AudioRecorder: NSObject {
                         completion(.success(()))
                     } else {
                         completion(.failure(NSError(domain: "Permission not granted", code: 403)))
-                        showError?("Permission not granted")
+                        showMicError?()
                     }
                 }
             }

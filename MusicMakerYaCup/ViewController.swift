@@ -11,6 +11,7 @@ import CoreMedia
 import AVFoundation
 
 var showError: ((_ text: String) -> Void)?
+var showMicError: (() -> Void)?
 
 class HitView: UIView {
     var onDidTapView: (() -> Void)?
@@ -128,6 +129,17 @@ class ViewController: UIViewController {
         showError = { [weak self] text in
             let alert = UIAlertController(title: "Ошибка", message: text, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "ОК", style: .cancel))
+            self?.present(alert, animated: true)
+        }
+
+        showMicError = { [weak self] in
+            let alert = UIAlertController(title: "Доступ к микрофону не выдан", message: "Вы можете разрешить запись с микрофона в настройках приложения", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Настройки", style: .default, handler: { _ in
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
             self?.present(alert, animated: true)
         }
 

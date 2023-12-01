@@ -283,22 +283,38 @@ class MenuView: UIView {
         micButtonView.tintColor = .white
         micButtonView.onDidTap = { [weak self] in
             guard let self = self else { return }
-            self.isAudioRecording.toggle()
-            if !self.isAudioRecording {
-                self.recordButtonView.isEnabled = true
-                self.playbackButtonView.isEnabled = true
-                self.micButtonView.tintColor = .white
-                self.audioRecorder.stopRecording()
-            } else {
-                self.recordButtonView.isEnabled = false
-                self.playbackButtonView.isEnabled = false
-                self.micButtonView.tintColor = .accentRed
-                CompositionController.shared.addVocalLayer()
-                do {
-                    try self.audioRecorder.startRecording()
-                } catch {
-                    showError?(error.localizedDescription)
+            let startRecording = { [weak self] in
+                guard let self = self else { return }
+                self.isAudioRecording.toggle()
+                if !self.isAudioRecording {
+                    self.recordButtonView.isEnabled = true
+                    self.playbackButtonView.isEnabled = true
+                    self.micButtonView.tintColor = .white
+                    self.audioRecorder.stopRecording()
+                } else {
+                    self.recordButtonView.isEnabled = false
+                    self.playbackButtonView.isEnabled = false
+                    self.micButtonView.tintColor = .accentRed
+                    CompositionController.shared.addVocalLayer()
+                    do {
+                        try self.audioRecorder.startRecording()
+                    } catch {
+                        showError?(error.localizedDescription)
+                    }
                 }
+            }
+            switch self.audioRecorder.recordingSession.recordPermission {
+            case .denied:
+                showMicError?()
+                break
+            case .undetermined:
+                self.audioRecorder.requestPermissions { [startRecording] _ in
+                    startRecording()
+                }
+            case .granted:
+                startRecording()
+            @unknown default:
+                startRecording()
             }
         }
     }
