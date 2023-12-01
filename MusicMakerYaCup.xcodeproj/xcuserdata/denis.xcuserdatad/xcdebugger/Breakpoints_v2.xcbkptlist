@@ -14,8 +14,8 @@
             filePath = "MusicMakerYaCup/Controller/CompositionController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
+            startingLineNumber = "275"
+            endingLineNumber = "275"
             landmarkName = "scheduleVocal(_:node:layer:)"
             landmarkType = "7">
             <Locations>

@@ -65,7 +65,6 @@ class CompositionController {
         onActiveLayerUpdate?()
         onDidChangeLayers?()
         if audioEngine.isRunning {
-            audioEngine.stop()
             playLayer(layer)
         }
     }
@@ -79,7 +78,6 @@ class CompositionController {
         onActiveLayerUpdate?()
         onDidChangeLayers?()
         if audioEngine.isRunning {
-            audioEngine.stop()
             playLayer(layer)
         }
     }
