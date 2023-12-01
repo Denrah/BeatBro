@@ -196,6 +196,10 @@ class ViewController: UIViewController {
                 self?.layersView.transform = isOpened ? .identity : CGAffineTransform(translationX: 0, y: 8)
             }
         }
+        menuView.onDidUpdateAudioRecordingState = { [weak self] isRecording in
+            self?.sampleSelectorView.isUserInteractionEnabled = !isRecording
+            self?.sampleSelectorView.alpha = isRecording ? 0.1 : 1
+        }
 
         menuView.update()
     }

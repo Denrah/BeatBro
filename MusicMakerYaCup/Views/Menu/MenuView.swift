@@ -84,6 +84,13 @@ class LayersButtonView: UIView {
         }
     }
 
+    var isEnabled: Bool = true {
+        didSet {
+            isUserInteractionEnabled = isEnabled
+            alpha = isEnabled ? 1 : 0.1
+        }
+    }
+
     private let stackView = UIStackView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
@@ -200,6 +207,8 @@ class MenuView: UIView {
         }
     }
 
+    var onDidUpdateAudioRecordingState: ((_ isRecording: Bool) -> Void)?
+
     private let layersButtonView = LayersButtonView()
     private let rightStackView = UIStackView()
     private let micButtonView = MenuButtonView()
@@ -207,7 +216,11 @@ class MenuView: UIView {
     private let playbackButtonView = MenuButtonView()
 
     private let audioRecorder = AudioRecorder()
-    private(set) var isAudioRecording = false
+    private(set) var isAudioRecording = false {
+        didSet {
+            onDidUpdateAudioRecordingState?(isAudioRecording)
+        }
+    }
 
     private var audioPlayer = AVPlayer()
 
@@ -226,7 +239,7 @@ class MenuView: UIView {
     }
 
     func update() {
-        layersButtonView.layerName = CompositionController.shared.activeLayer?.name
+        layersButtonView.layerName = "\(CompositionController.shared.activeLayer?.number ?? 0) • \(CompositionController.shared.activeLayer?.name ?? "")"
     }
 
     private func setup() {
@@ -287,11 +300,13 @@ class MenuView: UIView {
                 guard let self = self else { return }
                 self.isAudioRecording.toggle()
                 if !self.isAudioRecording {
+                    self.layersButtonView.isEnabled = true
                     self.recordButtonView.isEnabled = true
                     self.playbackButtonView.isEnabled = true
                     self.micButtonView.tintColor = .white
                     self.audioRecorder.stopRecording()
                 } else {
+                    self.layersButtonView.isEnabled = false
                     self.recordButtonView.isEnabled = false
                     self.playbackButtonView.isEnabled = false
                     self.micButtonView.tintColor = .accentRed
