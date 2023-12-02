@@ -20,6 +20,9 @@ class ReplayVisualizerViewController: UIViewController {
     private let nameLabel = UILabel()
     private let renameIcon = UIImageView()
 
+    private let progressBg = UIView()
+    private let progress = UIView()
+
     private let file: URL
     private var isPlaying = false
     private var timer: Timer?
@@ -145,6 +148,20 @@ class ReplayVisualizerViewController: UIViewController {
         }
         renameIcon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(editName)))
 
+        view.addSubview(progressBg)
+        progressBg.backgroundColor = .white.withAlphaComponent(0.5)
+        progressBg.layer.cornerRadius = 1
+        progressBg.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalTo(playButton.snp.top).offset(-8)
+            make.height.equalTo(2)
+        }
+
+        progressBg.addSubview(progress)
+        progress.backgroundColor = .accent
+        progress.frame = .zero
+        progress.layer.cornerRadius = 1
+
         ReplayAudioPlayer.shared.onPlaybackComplete = { [weak self] in
             if self?.isVideoRecording == true, (!(self?.recordIsPending == true) || !(self?.didPlayFileOnce == true)) {
                 let fileURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(self?.name ?? "BeatBro_Video_\(Int(Date().timeIntervalSince1970))").mov")
@@ -163,7 +180,9 @@ class ReplayVisualizerViewController: UIViewController {
                         self?.didPlayFileOnce = false
                         self?.sbackButton.isHidden = false
                         self?.totalTimeLabel.isHidden = false
+                        self?.progressBg.isHidden = false
                         let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+                        self?.progress.frame = .zero
                         self?.present(activityViewController, animated: true)
                     }
                 }
@@ -173,6 +192,7 @@ class ReplayVisualizerViewController: UIViewController {
                     self?.timer?.invalidate()
                     self?.timer = nil
                     self?.playButton.setImage(UIImage(named: "play-icon"), for: .normal)
+                    self?.progress.frame = .zero
                 }
             }
             self?.recordIsPending = false
@@ -231,7 +251,9 @@ class ReplayVisualizerViewController: UIViewController {
                     text = "00:00"
                 }
                 self?.playbackTimerLabel.text = text
-
+                self?.progress.frame = CGRect(x: 0, y: 0,
+                                              width: max(0, (self?.progressBg.frame.width ?? 0) * (ReplayAudioPlayer.shared.currentTime() / (self?.duration ?? 1))),
+                                              height: 2)
             })
             timer?.fire()
         }
@@ -260,6 +282,7 @@ class ReplayVisualizerViewController: UIViewController {
             self.renameIcon.isHidden = true
             self.recordIsPending = true
             self.totalTimeLabel.isHidden = true
+            self.progressBg.isHidden = true
 
             self.recorder.isMicrophoneEnabled = false
             self.recorder.startRecording { (error) in
@@ -274,6 +297,7 @@ class ReplayVisualizerViewController: UIViewController {
                     self.recordIsPending = false
                     self.sbackButton.isHidden = false
                     self.totalTimeLabel.isHidden = false
+                    self.progressBg.isHidden = false
                     return
                 }
                 ReplayAudioPlayer.shared.playFile(self.file, forced: true)
