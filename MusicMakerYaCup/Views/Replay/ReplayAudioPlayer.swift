@@ -23,6 +23,7 @@ class ReplayAudioPlayer {
     private var mixer = AVAudioMixerNode()
 
     private var fileNode: AVAudioPlayerNode?
+    private var isPaused = false
 
     private init() {}
 
@@ -38,7 +39,18 @@ class ReplayAudioPlayer {
         fileNode?.stop()
     }
 
-    func playFile(_ url: URL?) {
+    func pause() {
+        fileNode?.pause()
+        isPaused = true
+    }
+
+    func playFile(_ url: URL?, forced: Bool = false) {
+        if isPaused, !forced {
+            isPaused = false
+            fileNode?.play()
+            return
+        }
+
         audioEngine.stop()
 
         audioEngine = AVAudioEngine()
@@ -61,6 +73,7 @@ class ReplayAudioPlayer {
         if let url = url, let file = try? AVAudioFile(forReading: url) {
             node.scheduleFile(file, at: nil, completionCallbackType: .dataPlayedBack) { [weak self] _ in
                 self?.onPlaybackComplete?()
+                self?.isPaused = false
             }
         }
 

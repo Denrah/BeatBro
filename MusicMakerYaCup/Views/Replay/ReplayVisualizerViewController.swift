@@ -12,6 +12,7 @@ import ReplayKit
 class ReplayVisualizerViewController: UIViewController {
     private let backButton = UIButton(type: .system)
     private let playButton = UIButton(type: .system)
+    private let sbackButton = UIButton(type: .system)
     private let animationView = AnimationView()
     private let playbackTimerLabel = UILabel()
     private let saveButton = UIButton(type: .system)
@@ -24,6 +25,8 @@ class ReplayVisualizerViewController: UIViewController {
     private var isVideoRecording = false
     private let recorder = RPScreenRecorder.shared()
     private var name: String?
+    private var recordIsPending = false
+    private var didPlayFileOnce = false
 
     init(file: URL) {
         self.file = file
@@ -59,6 +62,16 @@ class ReplayVisualizerViewController: UIViewController {
         playButton.snp.makeConstraints { make in
             make.size.equalTo(40)
             make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(16)
+        }
+
+        view.addSubview(sbackButton)
+        sbackButton.tintColor = .white
+        sbackButton.setImage(UIImage(named: "sback"), for: .normal)
+        sbackButton.addTarget(self, action: #selector(stop), for: .touchUpInside)
+        sbackButton.snp.makeConstraints { make in
+            make.size.equalTo(40)
+            make.trailing.equalTo(playButton.snp.leading)
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(16)
         }
 
@@ -115,7 +128,7 @@ class ReplayVisualizerViewController: UIViewController {
         renameIcon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(editName)))
 
         ReplayAudioPlayer.shared.onPlaybackComplete = { [weak self] in
-            if self?.isVideoRecording == true {
+            if self?.isVideoRecording == true, (!(self?.recordIsPending == true) || !(self?.didPlayFileOnce == true)) {
                 let fileURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(self?.name ?? "BeatBro_Video_\(Int(Date().timeIntervalSince1970))").mov")
                 self?.recorder.stopRecording(withOutput: fileURL) { error in
                     print(fileURL)
@@ -128,6 +141,9 @@ class ReplayVisualizerViewController: UIViewController {
                         self?.saveButton.isHidden = false
                         self?.nameLabel.isHidden = false
                         self?.renameIcon.isHidden = false
+                        self?.recordIsPending = false
+                        self?.didPlayFileOnce = false
+                        self?.sbackButton.isHidden = false
                         let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
                         self?.present(activityViewController, animated: true)
                     }
@@ -140,6 +156,7 @@ class ReplayVisualizerViewController: UIViewController {
                     self?.playButton.setImage(UIImage(named: "play-icon"), for: .normal)
                 }
             }
+            self?.recordIsPending = false
         }
     }
 
@@ -166,14 +183,21 @@ class ReplayVisualizerViewController: UIViewController {
         dismiss(animated: true)
     }
 
+    @objc private func stop() {
+        ReplayAudioPlayer.shared.stop()
+        didPlayFileOnce = false
+        recordIsPending = false
+    }
+
     @objc private func play() {
         if isPlaying {
             isPlaying = false
-            ReplayAudioPlayer.shared.stop()
+            ReplayAudioPlayer.shared.pause()
             playButton.setImage(UIImage(named: "play-icon"), for: .normal)
             timer?.invalidate()
             timer = nil
         } else {
+            didPlayFileOnce = true
             isPlaying = true
             ReplayAudioPlayer.shared.playFile(file)
             playButton.setImage(UIImage(named: "pause-icon"), for: .normal)
@@ -204,11 +228,13 @@ class ReplayVisualizerViewController: UIViewController {
 
             self.backButton.isHidden = true
             self.playButton.isHidden = true
+            self.sbackButton.isHidden = true
             self.playbackTimerLabel.isHidden = true
             self.isVideoRecording = true
             self.saveButton.isHidden = true
             self.nameLabel.isHidden = true
             self.renameIcon.isHidden = true
+            self.recordIsPending = true
 
             self.recorder.isMicrophoneEnabled = false
             self.recorder.startRecording { (error) in
@@ -220,9 +246,11 @@ class ReplayVisualizerViewController: UIViewController {
                     self.saveButton.isHidden = false
                     self.nameLabel.isHidden = false
                     self.renameIcon.isHidden = false
+                    self.recordIsPending = false
+                    self.sbackButton.isHidden = false
                     return
                 }
-                ReplayAudioPlayer.shared.playFile(self.file)
+                ReplayAudioPlayer.shared.playFile(self.file, forced: true)
             }
         }))
 
