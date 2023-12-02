@@ -15,6 +15,8 @@ class ReplayAudioPlayer {
         fileNode?.isPlaying ?? false
     }
 
+    private(set) var duration: TimeInterval = 0
+
     private(set) var fftMagnitudes: [Float] = []
     var onVisualizerMagnitudesDidUpdate: (() -> Void)?
     var onPlaybackComplete: (() -> Void)?
@@ -71,6 +73,7 @@ class ReplayAudioPlayer {
         audioEngine.connect(node, to: mixer, format: nil)
 
         if let url = url, let file = try? AVAudioFile(forReading: url) {
+            self.duration = file.duration
             node.scheduleFile(file, at: nil, completionCallbackType: .dataPlayedBack) { [weak self] _ in
                 self?.onPlaybackComplete?()
                 self?.isPaused = false
@@ -124,4 +127,14 @@ class ReplayAudioPlayer {
 
         return normalizedMagnitudes
     }
+}
+
+extension AVAudioFile{
+
+    var duration: TimeInterval {
+        let sampleRateSong = Double(processingFormat.sampleRate)
+        let lengthSongSeconds = Double(length) / sampleRateSong
+        return lengthSongSeconds
+    }
+
 }

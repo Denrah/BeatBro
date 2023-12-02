@@ -15,6 +15,7 @@ class ReplayVisualizerViewController: UIViewController {
     private let sbackButton = UIButton(type: .system)
     private let animationView = AnimationView()
     private let playbackTimerLabel = UILabel()
+    private let totalTimeLabel = UILabel()
     private let saveButton = UIButton(type: .system)
     private let nameLabel = UILabel()
     private let renameIcon = UIImageView()
@@ -28,9 +29,12 @@ class ReplayVisualizerViewController: UIViewController {
     private var recordIsPending = false
     private var didPlayFileOnce = false
 
+    private var duration: TimeInterval = 0
+
     init(file: URL) {
         self.file = file
         super.init(nibName: nil, bundle: nil)
+        self.duration = (try? AVAudioFile(forReading: file).duration) ?? 0
     }
 
     required init?(coder: NSCoder) {
@@ -83,6 +87,20 @@ class ReplayVisualizerViewController: UIViewController {
             make.leading.equalToSuperview().inset(16)
             make.centerY.equalTo(playButton)
         }
+
+        view.addSubview(totalTimeLabel)
+        totalTimeLabel.font = .systemFont(ofSize: 16)
+        totalTimeLabel.textColor = .white
+        totalTimeLabel.text = "00:00"
+        totalTimeLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(16)
+            make.centerY.equalTo(playButton)
+        }
+
+        let formatter = DateFormatter()
+        let date = Date(timeIntervalSince1970: duration)
+        formatter.dateFormat = "mm:ss"
+        totalTimeLabel.text = formatter.string(from: date)
 
         view.addSubview(animationView)
 
@@ -144,6 +162,7 @@ class ReplayVisualizerViewController: UIViewController {
                         self?.recordIsPending = false
                         self?.didPlayFileOnce = false
                         self?.sbackButton.isHidden = false
+                        self?.totalTimeLabel.isHidden = false
                         let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
                         self?.present(activityViewController, animated: true)
                     }
@@ -240,6 +259,7 @@ class ReplayVisualizerViewController: UIViewController {
             self.nameLabel.isHidden = true
             self.renameIcon.isHidden = true
             self.recordIsPending = true
+            self.totalTimeLabel.isHidden = true
 
             self.recorder.isMicrophoneEnabled = false
             self.recorder.startRecording { (error) in
@@ -253,6 +273,7 @@ class ReplayVisualizerViewController: UIViewController {
                     self.renameIcon.isHidden = false
                     self.recordIsPending = false
                     self.sbackButton.isHidden = false
+                    self.totalTimeLabel.isHidden = false
                     return
                 }
                 ReplayAudioPlayer.shared.playFile(self.file, forced: true)
