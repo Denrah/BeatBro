@@ -35,6 +35,9 @@
 		924C6CB52AF2956B007525EB /* Samples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924C6CB42AF2956B007525EB /* Samples.swift */; };
 		924C6CB82AF2BEEC007525EB /* SampleSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924C6CB72AF2BEEC007525EB /* SampleSelectorView.swift */; };
 		924C6CBA2AF2D052007525EB /* SampleSelectorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924C6CB92AF2D052007525EB /* SampleSelectorItemView.swift */; };
+		92996EF42B1AF3230091C88C /* ReplayVisualizerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92996EF32B1AF3230091C88C /* ReplayVisualizerViewController.swift */; };
+		92996EF72B1B063B0091C88C /* ReplayAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92996EF62B1B063B0091C88C /* ReplayAudioPlayer.swift */; };
+		92996EF92B1B1AAA0091C88C /* AnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92996EF82B1B1AAA0091C88C /* AnimationView.swift */; };
 		92BBA88D2AF168D000B85D82 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BBA88C2AF168D000B85D82 /* AppDelegate.swift */; };
 		92BBA88F2AF168D000B85D82 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BBA88E2AF168D000B85D82 /* SceneDelegate.swift */; };
 		92BBA8912AF168D000B85D82 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BBA8902AF168D000B85D82 /* ViewController.swift */; };
@@ -79,6 +82,9 @@
 		924C6CB42AF2956B007525EB /* Samples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Samples.swift; sourceTree = "<group>"; };
 		924C6CB72AF2BEEC007525EB /* SampleSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleSelectorView.swift; sourceTree = "<group>"; };
 		924C6CB92AF2D052007525EB /* SampleSelectorItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleSelectorItemView.swift; sourceTree = "<group>"; };
+		92996EF32B1AF3230091C88C /* ReplayVisualizerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayVisualizerViewController.swift; sourceTree = "<group>"; };
+		92996EF62B1B063B0091C88C /* ReplayAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayAudioPlayer.swift; sourceTree = "<group>"; };
+		92996EF82B1B1AAA0091C88C /* AnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationView.swift; sourceTree = "<group>"; };
 		92BBA8892AF168D000B85D82 /* MusicMakerYaCup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicMakerYaCup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92BBA88C2AF168D000B85D82 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		92BBA88E2AF168D000B85D82 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -219,6 +225,16 @@
 			path = SampleSelector;
 			sourceTree = "<group>";
 		};
+		92996EF52B1B06250091C88C /* Replay */ = {
+			isa = PBXGroup;
+			children = (
+				92996EF32B1AF3230091C88C /* ReplayVisualizerViewController.swift */,
+				92996EF62B1B063B0091C88C /* ReplayAudioPlayer.swift */,
+				92996EF82B1B1AAA0091C88C /* AnimationView.swift */,
+			);
+			path = Replay;
+			sourceTree = "<group>";
+		};
 		92BBA8802AF168D000B85D82 = {
 			isa = PBXGroup;
 			children = (
@@ -257,6 +273,7 @@
 		92BBA8A32AF1699D00B85D82 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				92996EF52B1B06250091C88C /* Replay */,
 				923BB11D2AF5318800129745 /* RecordPlayer */,
 				9232CF372AF3E2E100590385 /* Menu */,
 				924C6CB62AF2BEDB007525EB /* SampleSelector */,
@@ -369,6 +386,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				92D902322B139D9600100C37 /* SampleMenuItemView.swift in Sources */,
+				92996EF72B1B063B0091C88C /* ReplayAudioPlayer.swift in Sources */,
 				9232CF3E2AF41A2E00590385 /* CompositionController.swift in Sources */,
 				92BBA8912AF168D000B85D82 /* ViewController.swift in Sources */,
 				92BBA8AA2AF16E1000B85D82 /* UIImage+AppImages.swift in Sources */,
@@ -376,6 +394,7 @@
 				924C6CAE2AF29487007525EB /* SamplePlayer.swift in Sources */,
 				92BBA8A62AF16D2D00B85D82 /* UIColor+AppColors.swift in Sources */,
 				923BB11F2AF5319600129745 /* RecordPlayerView.swift in Sources */,
+				92996EF92B1B1AAA0091C88C /* AnimationView.swift in Sources */,
 				9232CF412AF41A6000590385 /* Sample.swift in Sources */,
 				923BB11C2AF5262000129745 /* AudioRecorder.swift in Sources */,
 				92BBA88D2AF168D000B85D82 /* AppDelegate.swift in Sources */,
@@ -386,6 +405,7 @@
 				924C6CBA2AF2D052007525EB /* SampleSelectorItemView.swift in Sources */,
 				9232CF392AF3E2EF00590385 /* MenuView.swift in Sources */,
 				92BBA8A82AF16D9700B85D82 /* SampleConfiguratorPadView.swift in Sources */,
+				92996EF42B1AF3230091C88C /* ReplayVisualizerViewController.swift in Sources */,
 				9232CF432AF41A7000590385 /* Layer.swift in Sources */,
 				92BBA88F2AF168D000B85D82 /* SceneDelegate.swift in Sources */,
 				924C6CB82AF2BEEC007525EB /* SampleSelectorView.swift in Sources */,

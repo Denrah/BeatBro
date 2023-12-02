@@ -39,6 +39,7 @@ class ViewController: UIViewController {
     private let recordNameLabel = UILabel()
     private let loadingOverlay = UIView()
     private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private var showUpdate = false
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -61,6 +62,15 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard !showUpdate else { return }
+        showUpdate = true
+        let alert = UIAlertController(title: "Новая функция!", message: "После записи вашего трека, вы можете перейти к его визуализации и созданию видео", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Отлично", style: .default))
+        present(alert, animated: true)
     }
 
     private func setup() {
@@ -120,10 +130,20 @@ class ViewController: UIViewController {
 
         CompositionController.shared.onDidFinishRecord = { [weak self] url in
             self?.loadingOverlay.isHidden = false
-            let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-            self?.present(activityViewController, animated: true) { [weak self] in
+            let alertVC = UIAlertController(title: "Сохранить или визуализировать?", message: "Вы можете сохранить аудиофайл или перейти к визуализации, чтобы создать видео", preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction(title: "Сохранить", style: .default, handler: { [weak self] _ in
+                let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                self?.present(activityViewController, animated: true) { [weak self] in
+                    self?.loadingOverlay.isHidden = true
+                }
+            }))
+            alertVC.addAction(UIAlertAction(title: "Визуализировать", style: .default, handler: { [weak self] _ in
+                let vc = ReplayVisualizerViewController(file: url)
+                vc.modalPresentationStyle = .fullScreen
                 self?.loadingOverlay.isHidden = true
-            }
+                self?.present(vc, animated: true)
+            }))
+            self?.present(alertVC, animated: true)
         }
 
         showError = { [weak self] text in

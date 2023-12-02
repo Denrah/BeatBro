@@ -20,6 +20,7 @@ class CompositionController {
     var onDidChangeLayers: (() -> Void)?
     var onDidFinishRecord: ((_ fileURL: URL) -> Void)?
     var onMagnitudesDidUpdate: (() -> Void)?
+    var onVisualizerMagnitudesDidUpdate: (() -> Void)?
     var onStartPlayback: (() -> Void)?
 
     static let shared = CompositionController()
@@ -178,6 +179,7 @@ class CompositionController {
                 guard let data = buffer.floatChannelData?[0], let setup = fftSetup else { return }
                 self?.fftMagnitudes = self?.fft(data: data, setup: setup) ?? []
                 self?.onMagnitudesDidUpdate?()
+                self?.onVisualizerMagnitudesDidUpdate?()
             }
         }
     }
@@ -186,6 +188,7 @@ class CompositionController {
         audioEngine.stop()
         fftMagnitudes = [Float](repeating: 0, count: Constants.bufferSize)
         onMagnitudesDidUpdate?()
+        onVisualizerMagnitudesDidUpdate?()
     }
 
     func recordComposition() throws {
@@ -214,6 +217,7 @@ class CompositionController {
             guard let data = buffer.floatChannelData?[0], let setup = fftSetup else { return }
             self?.fftMagnitudes = self?.fft(data: data, setup: setup) ?? []
             self?.onMagnitudesDidUpdate?()
+            self?.onVisualizerMagnitudesDidUpdate?()
         }
         isRecording = isCompositionPlaying
     }
