@@ -71,7 +71,7 @@ class ReplayVisualizerViewController: UIViewController {
         sbackButton.addTarget(self, action: #selector(stop), for: .touchUpInside)
         sbackButton.snp.makeConstraints { make in
             make.size.equalTo(40)
-            make.trailing.equalTo(playButton.snp.leading)
+            make.trailing.equalTo(playButton.snp.leading).offset(-8)
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(16)
         }
 
@@ -203,11 +203,16 @@ class ReplayVisualizerViewController: UIViewController {
             playButton.setImage(UIImage(named: "pause-icon"), for: .normal)
             timer?.invalidate()
             timer = nil
-            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] _ in
+            timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true, block: { [weak self] _ in
                 let formatter = DateFormatter()
                 let date = Date(timeIntervalSince1970: ReplayAudioPlayer.shared.currentTime())
                 formatter.dateFormat = "mm:ss"
-                self?.playbackTimerLabel.text = formatter.string(from: date)
+                var text = formatter.string(from: date)
+                if text == "59:59" {
+                    text = "00:00"
+                }
+                self?.playbackTimerLabel.text = text
+
             })
             timer?.fire()
         }
